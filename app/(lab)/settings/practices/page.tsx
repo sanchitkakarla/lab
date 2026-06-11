@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useEffect, useState } from 'react'
 import { Practice } from '@/types/database'
 import { LiquidButton } from '@/components/ui/liquid-glass-button'
