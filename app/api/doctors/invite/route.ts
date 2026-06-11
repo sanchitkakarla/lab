@@ -58,12 +58,8 @@ export async function POST(request: Request) {
 
     // Send an invite / password reset email so the doctor sets their own password
     if (existing) {
-      // Doctor already has an account — send a password reset link to /doctor-setup
-      const { error: resetErr } = await admin.auth.admin.generateLink({
-        type: 'recovery',
-        email: doctor.email,
-        options: { redirectTo },
-      })
+      // Doctor already has an account — send a password reset email
+      const { error: resetErr } = await admin.auth.resetPasswordForEmail(doctor.email, { redirectTo })
       if (resetErr) return NextResponse.json({ error: resetErr.message }, { status: 500 })
     } else {
       // No account yet — send an invite email that lands on /doctor-setup
