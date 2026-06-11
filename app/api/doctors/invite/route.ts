@@ -24,8 +24,10 @@ export async function POST(request: Request) {
   const admin = createAdminClient()
 
   // Check if an auth user already exists for this email
-  const { data: existingUsers } = await admin.auth.admin.listUsers()
-  const existing = existingUsers?.users.find(u => u.email === doctor.email)
+  const { data: existingUsers } = await admin.auth.admin.listUsers({ perPage: 1000 })
+  const existing = existingUsers?.users.find(
+    u => u.email?.toLowerCase() === doctor.email.toLowerCase()
+  )
 
   if (temp_password) {
     // Lab owner is setting a specific temporary password
@@ -47,7 +49,7 @@ export async function POST(request: Request) {
     }
 
     // Enable portal access
-    await supabase.from('doctors').update({ portal_enabled: true }).eq('id', doctor_id)
+    await admin.from('doctors').update({ portal_enabled: true }).eq('id', doctor_id)
 
     return NextResponse.json({ success: true, method: 'password_set' })
   } else {
@@ -73,7 +75,7 @@ export async function POST(request: Request) {
     }
 
     // Enable portal access
-    await supabase.from('doctors').update({ portal_enabled: true }).eq('id', doctor_id)
+    await admin.from('doctors').update({ portal_enabled: true }).eq('id', doctor_id)
 
     return NextResponse.json({ success: true, method: 'email_sent' })
   }
