@@ -22,7 +22,7 @@ export default function DoctorsPage() {
   const [tempPassword, setTempPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [inviting, setInviting] = useState(false)
-  const [inviteResult, setInviteResult] = useState<{ ok: boolean; msg: string } | null>(null)
+  const [inviteResult, setInviteResult] = useState<{ ok: boolean; msg: string; link?: string } | null>(null)
 
   useEffect(() => { load() }, [])
 
@@ -74,8 +74,11 @@ export default function DoctorsPage() {
       setInviteResult({
         ok: true,
         msg: json.method === 'email_sent'
-          ? `Invite email sent to ${inviteDoctor.email}`
+          ? `Email sent to ${inviteDoctor.email}`
+          : json.method === 'link_only'
+          ? `Copy this link and share it with Dr. ${inviteDoctor.last_name}:`
           : `Password set — share it with Dr. ${inviteDoctor.last_name} securely`,
+        link: json.link,
       })
       await load()
     } else {
@@ -226,11 +229,29 @@ export default function DoctorsPage() {
             )}
 
             {inviteResult && (
-              <div className={`flex items-start gap-2 text-sm mb-4 px-3 py-2.5 rounded-lg ${
+              <div className={`text-sm mb-4 px-3 py-2.5 rounded-lg ${
                 inviteResult.ok ? 'bg-gray-50 text-gray-700' : 'bg-red-50 text-red-600'
               }`}>
-                {inviteResult.ok && <Check className="w-4 h-4 mt-0.5 text-gray-500 shrink-0" />}
-                {inviteResult.msg}
+                <div className="flex items-start gap-2">
+                  {inviteResult.ok && <Check className="w-4 h-4 mt-0.5 text-gray-500 shrink-0" />}
+                  {inviteResult.msg}
+                </div>
+                {inviteResult.link && (
+                  <div className="mt-2">
+                    <input
+                      readOnly
+                      value={inviteResult.link}
+                      className="w-full text-xs bg-white border border-gray-200 rounded px-2 py-1.5 text-gray-600 font-mono truncate"
+                      onFocus={e => e.target.select()}
+                    />
+                    <button
+                      onClick={() => { navigator.clipboard.writeText(inviteResult.link!); }}
+                      className="mt-1.5 text-xs text-gray-500 hover:text-gray-800 underline underline-offset-2"
+                    >
+                      Copy link
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
