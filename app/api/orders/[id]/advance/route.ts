@@ -50,14 +50,22 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const doctor = (order.doctors as any)?.[0] as { email: string; first_name: string; last_name: string } | undefined
+  console.log('[advance] doctor:', JSON.stringify(doctor), '| RESEND_API_KEY set:', !!process.env.RESEND_API_KEY)
   if (doctor?.email) {
-    await sendStageEmail({
-      toEmail:     doctor.email,
-      doctorName:  `${doctor.first_name} ${doctor.last_name}`,
-      patientName: order.patient_last_name,
-      newStage:    nextStage,
-      pickupDate:  order.estimated_pickup_date,
-    })
+    try {
+      await sendStageEmail({
+        toEmail:     doctor.email,
+        doctorName:  `${doctor.first_name} ${doctor.last_name}`,
+        patientName: order.patient_last_name,
+        newStage:    nextStage,
+        pickupDate:  order.estimated_pickup_date,
+      })
+      console.log('[advance] email sent to', doctor.email)
+    } catch (e) {
+      console.error('[advance] email error:', e)
+    }
+  } else {
+    console.log('[advance] no doctor email — skipping notification')
   }
 
   return NextResponse.json({ success: true, newStage: nextStage })
