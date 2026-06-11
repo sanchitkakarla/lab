@@ -1,7 +1,5 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 const STAGE_MESSAGES: Record<string, string> = {
   'Received':       'We have received your case and it is in our queue.',
   'Prep Started':   'Your case has been assigned and prep work has begun.',
@@ -28,6 +26,7 @@ export async function sendStageEmail({
     return
   }
 
+  const resend = new Resend(process.env.RESEND_API_KEY)
   const message = STAGE_MESSAGES[newStage] ?? `Status updated to: ${newStage}`
   const isReady = newStage === 'Ready'
 
