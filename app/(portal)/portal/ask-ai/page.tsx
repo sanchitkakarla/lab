@@ -16,9 +16,8 @@ export default async function AskAIPage() {
   }
 
   return (
-    <div className="max-w-2xl">
-      <h2 className="text-xl font-semibold text-gray-900 mb-6">Ask AI</h2>
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden" style={{ height: '600px' }}>
+    <div className="h-full flex flex-col" style={{ height: 'calc(100vh - 48px)' }}>
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden flex-1 flex flex-col">
         <AskAIPanel doctorName={doctorName} />
       </div>
     </div>
