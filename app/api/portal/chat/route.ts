@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { HfInference } from '@huggingface/inference'
+import Groq from 'groq-sdk'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createServerClient } from '@/lib/supabase/server'
 
-const hf = new HfInference(process.env.HUGGINGFACE_API_KEY!)
-
-// Free model on HF Inference API — no cost, just needs a free HF token
-const MODEL = 'HuggingFaceH4/zephyr-7b-beta'
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! })
 
 export async function POST(req: NextRequest) {
   const supabase = await createServerClient()
@@ -46,39 +43,22 @@ Current active orders:
 ${ordersContext}
 Be concise and professional. Only answer based on the data above. If a patient is not listed, they have no active case.`
 
-  // Build conversation in Mistral instruct format
-  const turns = (history ?? []) as { role: string; content: string }[]
-  let prompt = `<s>[INST] <<SYS>>\n${systemPrompt}\n<</SYS>>\n\n`
-
-  for (let i = 0; i < turns.length; i++) {
-    const t = turns[i]
-    if (t.role === 'user') {
-      prompt += i === 0 ? `${t.content} [/INST] ` : `[INST] ${t.content} [/INST] `
-    } else {
-      prompt += `${t.content} </s><s>`
-    }
-  }
-  prompt += turns.length === 0
-    ? `${message} [/INST]`
-    : `[INST] ${message} [/INST]`
-
   try {
-    const result = await hf.textGeneration({
-      model: MODEL,
-      inputs: prompt,
-      parameters: {
-        max_new_tokens: 512,
-        temperature: 0.4,
-        return_full_text: false,
-      },
+    const response = await groq.chat.completions.create({
+      model: 'llama-3.1-8b-instant',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        ...(history ?? []),
+        { role: 'user', content: message },
+      ],
+      max_tokens: 512,
+      temperature: 0.4,
     })
-    const reply = result.generated_text.trim()
+
+    const reply = response.choices[0]?.message?.content?.trim() ?? 'No response.'
     return NextResponse.json({ reply })
   } catch (err) {
-    console.error('HF error:', err)
-    return NextResponse.json(
-      { reply: 'The AI model is currently loading (this can take ~20 seconds on first request). Please try again in a moment.' },
-      { status: 200 }
-    )
+    console.error('Groq error:', err)
+    return NextResponse.json({ reply: 'Something went wrong. Please try again.' }, { status: 200 })
   }
 }
