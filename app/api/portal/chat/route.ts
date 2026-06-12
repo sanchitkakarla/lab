@@ -6,7 +6,7 @@ import { createServerClient } from '@/lib/supabase/server'
 const hf = new HfInference(process.env.HUGGINGFACE_API_KEY!)
 
 // Free model on HF Inference API — no cost, just needs a free HF token
-const MODEL = 'mistralai/Mistral-7B-Instruct-v0.3'
+const MODEL = 'HuggingFaceH4/zephyr-7b-beta'
 
 export async function POST(req: NextRequest) {
   const supabase = await createServerClient()
@@ -62,16 +62,23 @@ Be concise and professional. Only answer based on the data above. If a patient i
     ? `${message} [/INST]`
     : `[INST] ${message} [/INST]`
 
-  const result = await hf.textGeneration({
-    model: MODEL,
-    inputs: prompt,
-    parameters: {
-      max_new_tokens: 512,
-      temperature: 0.4,
-      return_full_text: false,
-    },
-  })
-
-  const reply = result.generated_text.trim()
-  return NextResponse.json({ reply })
+  try {
+    const result = await hf.textGeneration({
+      model: MODEL,
+      inputs: prompt,
+      parameters: {
+        max_new_tokens: 512,
+        temperature: 0.4,
+        return_full_text: false,
+      },
+    })
+    const reply = result.generated_text.trim()
+    return NextResponse.json({ reply })
+  } catch (err) {
+    console.error('HF error:', err)
+    return NextResponse.json(
+      { reply: 'The AI model is currently loading (this can take ~20 seconds on first request). Please try again in a moment.' },
+      { status: 200 }
+    )
+  }
 }
