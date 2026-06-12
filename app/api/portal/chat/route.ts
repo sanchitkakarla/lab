@@ -3,7 +3,7 @@ import Groq from 'groq-sdk'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createServerClient } from '@/lib/supabase/server'
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! })
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY ?? 'missing' })
 
 export async function POST(req: NextRequest) {
   const supabase = await createServerClient()
