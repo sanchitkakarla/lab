@@ -7,13 +7,17 @@ import { useSidebar } from '@/components/ui/sidebar'
 import { GlassFilter } from '@/components/ui/liquid-glass'
 import {
   LayoutDashboard, PlusCircle, Search, Building2,
-  Users, Package, LogOut, ChevronLeft, ChevronRight,
+  Users, Package, LogOut, ChevronLeft, ChevronRight, Sparkles,
 } from 'lucide-react'
 
 const NAV_MAIN = [
   { href: '/dashboard',  label: 'Dashboard',     icon: LayoutDashboard },
   { href: '/orders/new', label: 'New Order',      icon: PlusCircle },
   { href: '/lookup',     label: 'Patient Lookup', icon: Search },
+]
+
+const NAV_AI = [
+  { href: '/ai', label: 'AI Agent', icon: Sparkles },
 ]
 
 const NAV_SETTINGS = [
@@ -66,6 +70,12 @@ export function AppSidebar() {
               active={pathname === item.href || (item.href !== '/orders/new' && pathname.startsWith(item.href + '/'))}
               collapsed={!open}
             />
+          ))}
+        </NavSection>
+
+        <NavSection label="AI" collapsed={!open}>
+          {NAV_AI.map(item => (
+            <NavItem key={item.href} item={item} active={pathname.startsWith(item.href)} collapsed={!open} />
           ))}
         </NavSection>
 

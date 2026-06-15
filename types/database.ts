@@ -106,3 +106,18 @@ export const STATUS_HEX: Record<CaseStatus, string> = {
   'Ready':          '#15803D',
   'Delivered':      '#6B7280',
 }
+
+export type TicketTaskType = 'payment' | 'case_status' | 'parts_not_found' | 'appointment' | 'other'
+export type TicketStatus = 'open' | 'resolved'
+
+export interface AITicket {
+  id: string
+  tenant_id: string
+  phone_number: string
+  customer_name: string
+  task_type: TicketTaskType
+  task_name: string
+  question: string
+  status: TicketStatus
+  created_at: string
+}
