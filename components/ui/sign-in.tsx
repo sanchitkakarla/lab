@@ -152,7 +152,7 @@ export function SignIn() {
   }
 
   return (
-    <div className="min-h-screen w-screen flex flex-col" style={{ background: 'linear-gradient(135deg, #f8faff 0%, #faf8ff 35%, #f6fbff 65%, #f8fdff 100%)' }}>
+    <div className="min-h-screen w-screen flex flex-col" style={{ background: 'linear-gradient(135deg, #dde8ff 0%, #e8d8ff 30%, #cfe8ff 60%, #d4f0f8 100%)' }}>
       <style>{`
         @property --angle-1 { syntax: "<angle>"; inherits: false; initial-value: -75deg; }
         @property --angle-2 { syntax: "<angle>"; inherits: false; initial-value: -45deg; }
@@ -183,9 +183,9 @@ export function SignIn() {
       <div className="flex w-full flex-1 min-h-screen items-center justify-center relative overflow-hidden">
         {/* Floating orbs */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-          <div style={{ position: 'absolute', top: '-15%', left: '-10%',  width: 700, height: 700, borderRadius: '50%', background: 'radial-gradient(circle, rgba(180,200,255,0.30) 0%, transparent 70%)', filter: 'blur(60px)' }} />
-          <div style={{ position: 'absolute', bottom: '-10%', right: '-10%', width: 650, height: 650, borderRadius: '50%', background: 'radial-gradient(circle, rgba(210,185,255,0.25) 0%, transparent 70%)', filter: 'blur(60px)' }} />
-          <div style={{ position: 'absolute', top: '40%', left: '40%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(160,220,255,0.22) 0%, transparent 70%)', filter: 'blur(60px)' }} />
+          <div style={{ position: 'absolute', top: '-15%', left: '-10%',  width: 700, height: 700, borderRadius: '50%', background: 'radial-gradient(circle, rgba(139,180,255,0.50) 0%, transparent 70%)', filter: 'blur(60px)' }} />
+          <div style={{ position: 'absolute', bottom: '-10%', right: '-10%', width: 650, height: 650, borderRadius: '50%', background: 'radial-gradient(circle, rgba(180,140,255,0.45) 0%, transparent 70%)', filter: 'blur(60px)' }} />
+          <div style={{ position: 'absolute', top: '40%', left: '35%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(100,200,255,0.40) 0%, transparent 70%)', filter: 'blur(60px)' }} />
         </div>
 
         <fieldset disabled={loading} className="glass-card relative z-10 flex flex-col items-center gap-8 w-[340px] mx-auto p-8">

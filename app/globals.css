@@ -24,7 +24,7 @@
   --ring: #171717;
 
   /* Glass UI variables */
-  --glass-bg: rgba(255, 255, 255, 0.20);
+  --glass-bg: rgba(255, 255, 255, 0.35);
   --glass-border: rgba(255, 255, 255, 0.55);
   --blur: 60px;
   --blur-sm: 32px;
