@@ -156,10 +156,10 @@ export function AgentSettings({ initial }: { initial: Partial<Settings & { week_
       </div>
 
       {/* Row 2: Office hours + Google Maps side by side */}
-      <div className="grid grid-cols-2 gap-4 items-start">
+      <div className="grid grid-cols-5 gap-4 items-start">
 
         {/* Office hours */}
-        <div className="glass-card p-5">
+        <div className="glass-card p-5 col-span-3">
           <p className="text-sm font-medium text-gray-900 mb-4">Office hours</p>
           <div className="space-y-2">
             {DAYS.map(day => {
@@ -203,7 +203,7 @@ export function AgentSettings({ initial }: { initial: Partial<Settings & { week_
         </div>
 
         {/* Google Maps */}
-        <div className="glass-card p-5">
+        <div className="glass-card p-5 col-span-2">
           <div className="flex items-center gap-2 mb-3">
             <MapPin className="w-4 h-4 text-gray-500" />
             <p className="text-sm font-medium text-gray-900">Office location</p>
