@@ -106,7 +106,7 @@ export default function DoctorsPage() {
       <h2 className="text-xl font-semibold text-gray-900 mb-6">Doctors</h2>
 
       {/* Add Doctor form */}
-      <form onSubmit={save} className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 mb-6 space-y-3">
+      <form onSubmit={save} className="glass-card p-5 mb-6 space-y-3">
         <h3 className="text-sm font-semibold text-gray-700">Add Doctor</h3>
         <select value={form.practice_id} onChange={e => setForm(f => ({ ...f, practice_id: e.target.value }))} required className={cls}>
           <option value="">Select practice *</option>
@@ -124,7 +124,7 @@ export default function DoctorsPage() {
       </form>
 
       {/* Doctors table */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="glass-card overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-50 bg-gray-50/60">
@@ -171,7 +171,7 @@ export default function DoctorsPage() {
       {/* Invite Modal */}
       {inviteDoctor && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6">
+          <div className="relative glass-card shadow-xl w-full max-w-md mx-4 p-6">
             <button onClick={closeInvite} className="absolute top-4 right-4 text-gray-400 hover:text-gray-700">
               <X className="w-5 h-5" />
             </button>

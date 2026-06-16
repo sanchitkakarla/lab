@@ -24,8 +24,8 @@
   --ring: #171717;
 
   /* Glass UI variables — white-tinted glass keeping white base */
-  --glass-bg: rgba(255, 255, 255, 0.45);
-  --glass-border: rgba(255, 255, 255, 0.55);
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.75);
   --blur: 30px;
   --blur-sm: 15px;
   --blur-lg: 50px;
@@ -143,6 +143,14 @@ body {
   backdrop-filter: blur(var(--blur));
   -webkit-backdrop-filter: blur(var(--blur));
   border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
+  box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.8);
   border-radius: 12px;
+}
+
+.glass {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(var(--blur)) !important;
+  -webkit-backdrop-filter: blur(var(--blur)) !important;
+  border-color: var(--glass-border) !important;
+  box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.8) !important;
 }
