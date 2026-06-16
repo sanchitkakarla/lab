@@ -152,7 +152,7 @@ export function SignIn() {
   }
 
   return (
-    <div className="min-h-screen w-screen flex flex-col" style={{ background: 'linear-gradient(135deg, #d4e4f7 0%, #ddd5f5 30%, #cce3f9 60%, #d8eef8 85%, #e2f0f5 100%)' }}>
+    <div className="min-h-screen w-screen flex flex-col" style={{ background: 'linear-gradient(135deg, #c8d8f0 0%, #d4c8ef 30%, #bdd8f5 60%, #cce8f2 100%)' }}>
       <style>{`
         @property --angle-1 { syntax: "<angle>"; inherits: false; initial-value: -75deg; }
         @property --angle-2 { syntax: "<angle>"; inherits: false; initial-value: -45deg; }
@@ -181,6 +181,12 @@ export function SignIn() {
 
       {/* Main */}
       <div className="flex w-full flex-1 min-h-screen items-center justify-center relative overflow-hidden">
+        {/* Floating orbs */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+          <div style={{ position: 'absolute', top: '-15%', left: '-10%',  width: 700, height: 700, borderRadius: '50%', background: 'radial-gradient(circle, rgba(167,190,255,0.60) 0%, transparent 70%)', filter: 'blur(40px)' }} />
+          <div style={{ position: 'absolute', bottom: '-10%', right: '-10%', width: 650, height: 650, borderRadius: '50%', background: 'radial-gradient(circle, rgba(196,168,255,0.55) 0%, transparent 70%)', filter: 'blur(40px)' }} />
+          <div style={{ position: 'absolute', top: '40%', left: '40%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(144,210,255,0.45) 0%, transparent 70%)', filter: 'blur(40px)' }} />
+        </div>
 
         <fieldset disabled={loading} className="glass-card relative z-10 flex flex-col items-center gap-8 w-[340px] mx-auto p-8">
 
