@@ -72,7 +72,7 @@ export function AppSidebar() {
       <GlassFilter />
 
       {/* Primary icon rail — 48px */}
-      <div className="flex flex-col w-12 h-full bg-white border-r border-gray-100">
+      <div className="flex flex-col w-12 h-full border-r border-white/60" style={{ background: 'var(--glass-bg)', backdropFilter: 'blur(var(--blur))' }}>
         {/* Logo */}
         <div className="flex h-14 items-center justify-center border-b border-gray-100 shrink-0">
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-900 text-white">
@@ -121,8 +121,8 @@ export function AppSidebar() {
 
       {/* Secondary sidebar — slides in */}
       <div
-        className="h-full bg-white border-r border-gray-100 overflow-hidden transition-all duration-200 ease-in-out"
-        style={{ width: active ? '176px' : '0px' }}
+        className="h-full border-r border-white/60 overflow-hidden transition-all duration-200 ease-in-out"
+        style={{ background: 'var(--glass-bg)', backdropFilter: 'blur(var(--blur))', width: active ? '176px' : '0px' }}
       >
         {active && (
           <div className="w-44 h-full flex flex-col py-4">
