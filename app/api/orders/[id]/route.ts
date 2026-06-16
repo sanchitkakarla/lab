@@ -23,8 +23,11 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const supabase = await createServerClient()
   const body = await request.json()
 
-  const allowed = ['notes', 'colour_shade', 'tooth_numbers', 'estimated_pickup_date',
-                   'case_start_date', 'is_archived']
+  const allowed = [
+    'practice_id', 'doctor_id', 'patient_first_name', 'patient_last_name', 'patient_dob',
+    'product_id', 'tooth_numbers', 'colour_shade', 'case_start_date',
+    'estimated_pickup_date', 'notes', 'is_archived',
+  ]
   const update = Object.fromEntries(
     Object.entries(body).filter(([k]) => allowed.includes(k))
   )

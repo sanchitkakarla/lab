@@ -5,6 +5,7 @@ import { AdvanceButton } from '@/components/lab/AdvanceButton'
 import { STAGE_ORDER, Order, OrderStageHistory } from '@/types/database'
 import { format } from 'date-fns'
 import Link from 'next/link'
+import { Pencil } from 'lucide-react'
 
 export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -50,11 +51,19 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
       </div>
 
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <h2 className="text-xl font-semibold text-gray-900">
-          {typedOrder.patient_last_name}, {typedOrder.patient_first_name}
-        </h2>
-        <StatusBadge status={typedOrder.case_status} />
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <h2 className="text-xl font-semibold text-gray-900">
+            {typedOrder.patient_last_name}, {typedOrder.patient_first_name}
+          </h2>
+          <StatusBadge status={typedOrder.case_status} />
+        </div>
+        <Link
+          href={`/orders/${id}/edit`}
+          className="flex items-center gap-1.5 text-xs font-medium px-4 py-2 rounded-full border border-gray-200 bg-white/60 hover:bg-white/80 text-gray-700 transition-colors"
+        >
+          <Pencil className="w-3.5 h-3.5" /> Edit order
+        </Link>
       </div>
 
       <div className="grid grid-cols-3 gap-6">
