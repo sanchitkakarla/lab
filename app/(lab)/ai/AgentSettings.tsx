@@ -235,7 +235,7 @@ export function AgentSettings({ initial }: { initial: Partial<Settings & { week_
         disabled={saving}
         className="flex items-center gap-2 text-sm font-medium px-6 py-2.5 rounded-full bg-gray-900 text-white hover:bg-gray-700 transition-colors disabled:opacity-50"
       >
-        {saved ? <><Check className="w-4 h-4" /> Saved & synced to ElevenLabs</> : saving ? 'Saving…' : 'Save & sync to ElevenLabs'}
+        {saved ? <><Check className="w-4 h-4" /> Saved</> : saving ? 'Saving…' : 'Save changes'}
       </button>
     </div>
   )
