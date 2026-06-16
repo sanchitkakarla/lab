@@ -17,7 +17,7 @@ export default function CalendarPage() {
   return (
     <div>
       <h2 className="text-xl font-semibold text-gray-900 mb-6">Calendar</h2>
-      <div className="bg-white rounded-xl border border-gray-200 p-5">
+      <div className="glass-card p-5">
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"

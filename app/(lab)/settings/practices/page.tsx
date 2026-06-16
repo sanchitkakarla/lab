@@ -38,7 +38,7 @@ export default function PracticesPage() {
     <div className="max-w-2xl">
       <h2 className="text-xl font-semibold text-gray-900 mb-6">Practices</h2>
 
-      <form onSubmit={save} className="bg-white rounded-xl border border-gray-200 p-5 mb-6 space-y-3">
+      <form onSubmit={save} className="glass-card p-5 mb-6 space-y-3">
         <h3 className="text-sm font-semibold text-gray-700">Add Practice</h3>
         <input value={name} onChange={e => setName(e.target.value)} placeholder="Practice name *" required className={cls} />
         <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="Phone" className={cls} />
@@ -49,7 +49,7 @@ export default function PracticesPage() {
         </LiquidButton>
       </form>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="glass-card overflow-hidden">
         <table className="w-full text-sm">
           <thead><tr className="border-b border-gray-100 bg-gray-50">
             <th className="text-left px-4 py-3 font-medium text-gray-600">Name</th>

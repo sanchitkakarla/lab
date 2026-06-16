@@ -53,7 +53,7 @@ export default async function DashboardPage() {
       {/* Stats row */}
       <div className="grid grid-cols-5 gap-3">
         {STAGE_ORDER.map(stage => (
-          <div key={stage} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+          <div key={stage} className="glass-card p-4">
             <p className="text-xs text-gray-400 mb-1 font-medium">{STAGE_LABELS[stage]}</p>
             <p className="text-3xl font-bold text-gray-900">{counts[stage]}</p>
           </div>
@@ -61,7 +61,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Orders table */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="glass-card overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-100">
           <h2 className="text-sm font-semibold text-gray-700">Active Orders</h2>
         </div>

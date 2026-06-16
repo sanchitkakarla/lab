@@ -90,7 +90,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           </div>
 
           {/* Stage progress */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <div className="glass-card p-5">
             <h3 className="text-sm font-semibold text-gray-700 mb-4">Stage Progress</h3>
             <div className="flex items-center gap-2 flex-wrap">
               {STAGE_ORDER.map((stage, idx) => (
@@ -121,7 +121,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           </div>
 
           {/* Stage history */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <div className="glass-card p-5">
             <h3 className="text-sm font-semibold text-gray-700 mb-4">Stage History</h3>
             {typedHistory.length === 0 ? (
               <p className="text-sm text-gray-400">No history yet.</p>
@@ -144,7 +144,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
         {/* Right column — patient order history */}
         <div className="col-span-1">
-          <div className="bg-white rounded-xl border border-gray-200 p-5 sticky top-6">
+          <div className="glass-card p-5 sticky top-6">
             <h3 className="text-sm font-semibold text-gray-700 mb-1">Patient History</h3>
             <p className="text-xs text-gray-400 mb-4">All orders — oldest to latest</p>
 
@@ -194,7 +194,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5">
+    <div className="glass-card p-5">
       <h3 className="text-sm font-semibold text-gray-700 mb-3">{title}</h3>
       <div className="space-y-2">{children}</div>
     </div>

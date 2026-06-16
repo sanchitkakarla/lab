@@ -85,7 +85,7 @@ export default async function AIPage() {
 
 function StatCard({ label, value, color }: { label: string; value: number; color: string }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4">
+    <div className="glass-card p-4">
       <p className="text-xs text-gray-400 mb-1">{label}</p>
       <p className={`text-2xl font-semibold ${color}`}>{value}</p>
     </div>
@@ -94,7 +94,7 @@ function StatCard({ label, value, color }: { label: string; value: number; color
 
 function TicketCard({ ticket: t }: { ticket: AITicket }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4">
+    <div className="glass-card p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           {/* Task name + type */}
