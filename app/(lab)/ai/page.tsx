@@ -2,7 +2,6 @@ import { createServerClient } from '@/lib/supabase/server'
 import { AITicket } from '@/types/database'
 import { format } from 'date-fns'
 import { TicketActions } from './TicketActions'
-import { AgentSettings } from './AgentSettings'
 
 const TASK_TYPE_LABELS: Record<string, string> = {
   payment:        'Payment',
@@ -23,10 +22,10 @@ const TASK_TYPE_COLORS: Record<string, string> = {
 export default async function AIPage() {
   const supabase = await createServerClient()
 
-  const [{ data: tickets }, { data: agentSettings }] = await Promise.all([
-    supabase.from('ai_tickets').select('*').order('created_at', { ascending: false }),
-    supabase.from('agent_settings').select('*').single(),
-  ])
+  const { data: tickets } = await supabase
+    .from('ai_tickets')
+    .select('*')
+    .order('created_at', { ascending: false })
 
   const typedTickets = (tickets ?? []) as AITicket[]
   const open = typedTickets.filter(t => t.status === 'open')
@@ -81,7 +80,6 @@ export default async function AIPage() {
         </section>
       )}
 
-      <AgentSettings initial={agentSettings ?? {}} />
     </div>
   )
 }

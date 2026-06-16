@@ -10,6 +10,7 @@ import {
   Users, Package, LogOut,
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { AgentSidebarPanel } from '@/components/lab/AgentSidebarPanel'
 
 type Section = 'main' | 'ai' | 'settings' | null
 
@@ -124,7 +125,9 @@ export function AppSidebar() {
         className="h-full border-r border-white/60 overflow-hidden transition-all duration-200 ease-in-out"
         style={{ background: 'var(--glass-bg)', backdropFilter: 'blur(var(--blur))', width: active ? '176px' : '0px' }}
       >
-        {active && (
+        {active === 'ai' && <AgentSidebarPanel />}
+
+        {active && active !== 'ai' && (
           <div className="w-44 h-full flex flex-col py-4">
             {/* Section label */}
             <p className="px-4 mb-2 text-[10px] font-semibold uppercase tracking-widest text-gray-400">
