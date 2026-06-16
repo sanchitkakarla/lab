@@ -152,7 +152,7 @@ export function SignIn() {
   }
 
   return (
-    <div className="min-h-screen w-screen flex flex-col" style={{ background: 'linear-gradient(135deg, #f0f4ff 0%, #f5f0ff 35%, #eef6ff 65%, #f0faff 100%)' }}>
+    <div className="min-h-screen w-screen flex flex-col" style={{ background: 'linear-gradient(135deg, #f8faff 0%, #faf8ff 35%, #f6fbff 65%, #f8fdff 100%)' }}>
       <style>{`
         @property --angle-1 { syntax: "<angle>"; inherits: false; initial-value: -75deg; }
         @property --angle-2 { syntax: "<angle>"; inherits: false; initial-value: -45deg; }
