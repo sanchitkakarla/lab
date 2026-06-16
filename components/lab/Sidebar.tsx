@@ -42,12 +42,6 @@ export function AppSidebar() {
   const supabase = createClient()
   const [active, setActive] = useState<Section>(null)
 
-  // Auto-open the right section based on current path
-  useEffect(() => {
-    if (pathname.startsWith('/ai')) setActive('ai')
-    else if (pathname.startsWith('/settings')) setActive('settings')
-    else setActive('main')
-  }, [pathname])
 
   async function signOut() {
     await supabase.auth.signOut()
