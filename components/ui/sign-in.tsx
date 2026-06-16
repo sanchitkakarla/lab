@@ -152,7 +152,7 @@ export function SignIn() {
   }
 
   return (
-    <div className="bg-white min-h-screen w-screen flex flex-col">
+    <div className="min-h-screen w-screen flex flex-col" style={{ background: 'linear-gradient(135deg, #d4e4f7 0%, #ddd5f5 30%, #cce3f9 60%, #d8eef8 85%, #e2f0f5 100%)' }}>
       <style>{`
         @property --angle-1 { syntax: "<angle>"; inherits: false; initial-value: -75deg; }
         @property --angle-2 { syntax: "<angle>"; inherits: false; initial-value: -45deg; }
@@ -180,14 +180,9 @@ export function SignIn() {
       </div>
 
       {/* Main */}
-      <div className="flex w-full flex-1 min-h-screen items-center justify-center bg-white relative overflow-hidden">
+      <div className="flex w-full flex-1 min-h-screen items-center justify-center relative overflow-hidden">
 
-        {/* Subtle white radial glow — no colour, just depth */}
-        <div className="absolute inset-0 pointer-events-none" style={{
-          background: "radial-gradient(ellipse 60% 50% at 50% 40%, rgba(0,0,0,0.03) 0%, transparent 70%)"
-        }} />
-
-        <fieldset disabled={loading} className="relative z-10 flex flex-col items-center gap-8 w-[300px] mx-auto p-4">
+        <fieldset disabled={loading} className="glass-card relative z-10 flex flex-col items-center gap-8 w-[340px] mx-auto p-8">
 
           <AnimatePresence mode="wait">
             {authStep === "email" && (
