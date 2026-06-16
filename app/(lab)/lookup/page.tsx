@@ -27,7 +27,7 @@ export default function LookupPage() {
   }
 
   return (
-    <div className="max-w-3xl">
+    <div className="w-full">
       <h2 className="text-xl font-semibold text-gray-900 mb-6">Patient Lookup</h2>
 
       <form onSubmit={search} className="flex gap-3 mb-6">
