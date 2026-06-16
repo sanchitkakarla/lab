@@ -42,6 +42,17 @@ export function AppSidebar() {
   const supabase = createClient()
   const [active, setActive] = useState<Section>(null)
 
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      const sidebar = document.getElementById('app-sidebar')
+      if (sidebar && !sidebar.contains(e.target as Node)) {
+        setActive(null)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
 
   async function signOut() {
     await supabase.auth.signOut()
@@ -57,7 +68,7 @@ export function AppSidebar() {
   const isSettingsActive = pathname.startsWith('/settings')
 
   return (
-    <div className="sticky top-0 h-screen flex shrink-0">
+    <div id="app-sidebar" className="sticky top-0 h-screen flex shrink-0">
       <GlassFilter />
 
       {/* Primary icon rail — 48px */}
