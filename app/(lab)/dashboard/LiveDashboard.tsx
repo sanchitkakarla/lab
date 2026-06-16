@@ -141,7 +141,7 @@ export function LiveDashboard() {
               <YAxis tick={{ fontSize: 11, fill: '#9ca3af' }} axisLine={false} tickLine={false} allowDecimals={false} />
               <Tooltip
                 contentStyle={{ background: 'rgba(255,255,255,0.9)', border: '1px solid #e5e7eb', borderRadius: 10, fontSize: 12 }}
-                formatter={(v: number) => [v, 'Cases']}
+                formatter={(v: any) => [v, 'Cases']}
               />
               <Area type="monotone" dataKey="count" stroke="#3b82f6" strokeWidth={2} fill="url(#grad)" dot={{ fill: '#3b82f6', r: 4 }} />
             </AreaChart>
