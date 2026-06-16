@@ -22,7 +22,7 @@ export async function GET(request: Request) {
       practices ( name )
     `)
     .eq('is_archived', false)
-    .order('patient_last_name', { ascending: true })
+    .order('order_date', { ascending: true })
 
   if (isDate) {
     // Normalise to YYYY-MM-DD for the DB

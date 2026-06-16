@@ -16,8 +16,8 @@ export async function GET() {
   const events = (data ?? []).map((order: any) => ({
     id:    order.id,
     title: `${order.patient_last_name} — ${(order.products as { name: string } | null)?.name ?? ''}`,
-    start: order.case_start_date ?? undefined,
-    end:   order.estimated_pickup_date,
+    start: order.estimated_pickup_date,
+    allDay: true,
     color: STATUS_HEX[order.case_status as keyof typeof STATUS_HEX] ?? '#6B7280',
     extendedProps: { status: order.case_status, orderId: order.id },
   }))
