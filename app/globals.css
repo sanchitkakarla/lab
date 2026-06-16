@@ -76,9 +76,14 @@
 }
 
 body {
-  background: var(--background);
+  background: linear-gradient(135deg, #f8faff 0%, #faf8ff 35%, #f6fbff 65%, #f8fdff 100%);
+  min-height: 100vh;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.app-bg {
+  background: linear-gradient(135deg, #f8faff 0%, #faf8ff 35%, #f6fbff 65%, #f8fdff 100%);
 }
 
 @keyframes moveBackground {

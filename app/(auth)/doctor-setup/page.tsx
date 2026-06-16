@@ -150,7 +150,7 @@ function DoctorSetupInner() {
 
 export default function DoctorSetupPage() {
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, #f8faff 0%, #faf8ff 35%, #f6fbff 65%, #f8fdff 100%)' }}>
       <div className="flex items-center gap-2 mb-10">
         <div className="bg-gray-900 text-white rounded-lg p-2">
           <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
