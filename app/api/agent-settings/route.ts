@@ -57,11 +57,21 @@ export async function POST(req: NextRequest) {
 function buildSystemPrompt(s: {
   office_hours?: string
   office_location_url?: string
-  greeting_message?: string
+  week_schedule?: string
 }) {
+  let hoursText = s.office_hours ?? ''
+  if (s.week_schedule) {
+    try {
+      const week = JSON.parse(s.week_schedule)
+      const lines = Object.entries(week)
+        .map(([day, d]: [string, any]) => d.open ? `${day}: ${d.from} – ${d.to}` : `${day}: Closed`)
+      hoursText = lines.join(', ')
+    } catch {}
+  }
+
   return `You are a helpful dental lab assistant answering calls on behalf of the dental lab.
 
-Office hours: ${s.office_hours ?? 'Monday–Friday 9am–5pm'}
+Office hours: ${hoursText || 'Monday–Friday 9am–5pm'}
 ${s.office_location_url ? `Office location: ${s.office_location_url}` : ''}
 
 Your responsibilities:
