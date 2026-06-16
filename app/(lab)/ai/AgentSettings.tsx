@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Mic, MapPin, Clock, MessageSquare, Check, ChevronDown } from 'lucide-react'
+import { createPortal } from 'react-dom'
 
 const VOICES = [
   { id: 'EXAVITQu4vr4xnSDxMaL', name: 'Sarah',    description: 'Soft & professional' },
@@ -28,6 +29,27 @@ export function AgentSettings({ initial }: { initial: Partial<Settings> }) {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [voiceOpen, setVoiceOpen] = useState(false)
+  const [dropdownRect, setDropdownRect] = useState<DOMRect | null>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+
+  function openVoice() {
+    if (triggerRef.current) {
+      setDropdownRect(triggerRef.current.getBoundingClientRect())
+    }
+    setVoiceOpen(o => !o)
+  }
+
+  // Close on outside click
+  useEffect(() => {
+    if (!voiceOpen) return
+    function close(e: MouseEvent) {
+      if (triggerRef.current && !triggerRef.current.contains(e.target as Node)) {
+        setVoiceOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', close)
+    return () => document.removeEventListener('mousedown', close)
+  }, [voiceOpen])
 
   function set<K extends keyof Settings>(key: K, val: Settings[K]) {
     setSettings(s => ({ ...s, [key]: val }))
@@ -48,6 +70,32 @@ export function AgentSettings({ initial }: { initial: Partial<Settings> }) {
 
   const selectedVoice = VOICES.find(v => v.id === settings.voice_id) ?? VOICES[0]
 
+  const dropdown = voiceOpen && dropdownRect ? createPortal(
+    <div
+      style={{
+        position: 'fixed',
+        top: dropdownRect.bottom + 6,
+        left: dropdownRect.left,
+        width: dropdownRect.width,
+        zIndex: 9999,
+      }}
+      className="glass-card p-1 shadow-xl"
+    >
+      {VOICES.map(v => (
+        <button
+          key={v.id}
+          onMouseDown={e => e.preventDefault()}
+          onClick={() => { set('voice_id', v.id); setVoiceOpen(false) }}
+          className={`w-full flex items-center justify-between text-left px-3 py-2.5 rounded-lg text-sm transition-colors ${v.id === settings.voice_id ? 'bg-gray-900 text-white' : 'hover:bg-white/60 text-gray-700'}`}
+        >
+          <span className="font-medium">{v.name} <span className={`font-normal ${v.id === settings.voice_id ? 'text-gray-300' : 'text-gray-400'}`}>— {v.description}</span></span>
+          {v.id === settings.voice_id && <Check className="w-3.5 h-3.5 flex-shrink-0" />}
+        </button>
+      ))}
+    </div>,
+    document.body
+  ) : null
+
   return (
     <div className="space-y-4">
 
@@ -59,32 +107,18 @@ export function AgentSettings({ initial }: { initial: Partial<Settings> }) {
           </div>
           <div>
             <p className="text-sm font-medium text-gray-900">Agent voice</p>
-            <p className="text-xs text-gray-400">ElevenLabs voice for calls</p>
+            <p className="text-xs text-gray-400">ElevenLabs voice used for all calls</p>
           </div>
         </div>
-        <div className="relative">
-          <button
-            onClick={() => setVoiceOpen(o => !o)}
-            className="w-full flex items-center justify-between gap-2 text-sm px-4 py-2.5 rounded-xl border border-gray-200 bg-white/60 hover:bg-white/80 transition-colors"
-          >
-            <span className="font-medium text-gray-900">{selectedVoice.name} <span className="font-normal text-gray-400">— {selectedVoice.description}</span></span>
-            <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform flex-shrink-0 ${voiceOpen ? 'rotate-180' : ''}`} />
-          </button>
-          {voiceOpen && (
-            <div className="absolute top-full mt-1 left-0 right-0 glass-card p-1 z-20 shadow-lg">
-              {VOICES.map(v => (
-                <button
-                  key={v.id}
-                  onClick={() => { set('voice_id', v.id); setVoiceOpen(false) }}
-                  className={`w-full flex items-center justify-between text-left px-3 py-2.5 rounded-lg text-sm transition-colors ${v.id === settings.voice_id ? 'bg-gray-900 text-white' : 'hover:bg-white/60 text-gray-700'}`}
-                >
-                  <span className="font-medium">{v.name} <span className={`font-normal ${v.id === settings.voice_id ? 'text-gray-300' : 'text-gray-400'}`}>— {v.description}</span></span>
-                  {v.id === settings.voice_id && <Check className="w-3.5 h-3.5 flex-shrink-0" />}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        <button
+          ref={triggerRef}
+          onClick={openVoice}
+          className="w-full flex items-center justify-between gap-2 text-sm px-4 py-2.5 rounded-xl border border-gray-200 bg-white/60 hover:bg-white/80 transition-colors"
+        >
+          <span className="font-medium text-gray-900">{selectedVoice.name} <span className="font-normal text-gray-400">— {selectedVoice.description}</span></span>
+          <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform flex-shrink-0 ${voiceOpen ? 'rotate-180' : ''}`} />
+        </button>
+        {dropdown}
       </div>
 
       {/* Greeting */}
@@ -95,7 +129,7 @@ export function AgentSettings({ initial }: { initial: Partial<Settings> }) {
           </div>
           <div>
             <p className="text-sm font-medium text-gray-900">Greeting message</p>
-            <p className="text-xs text-gray-400">What the agent says first on every call</p>
+            <p className="text-xs text-gray-400">What the agent says first on every call — syncs to ElevenLabs on save</p>
           </div>
         </div>
         <textarea
