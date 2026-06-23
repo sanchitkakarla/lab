@@ -12,9 +12,9 @@ import { createAdminClient } from '@/lib/supabase/admin'
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const patientName    = (searchParams.get('patient_name') ?? '').trim()
-  const firstName      = (searchParams.get('patient_first_name') ?? '').trim()
-  const lastName       = (searchParams.get('patient_last_name') ?? '').trim()
-  const dob            = (searchParams.get('dob') ?? '').trim()
+  const firstName      = (searchParams.get('patient_first_name') ?? searchParams.get('first_name') ?? '').trim()
+  const lastName       = (searchParams.get('patient_last_name') ?? searchParams.get('last_name') ?? '').trim()
+  const dob            = (searchParams.get('dob') ?? searchParams.get('date_of_birth') ?? '').trim()
   const doctorName     = (searchParams.get('doctor_name') ?? '').trim()
 
   const admin = createAdminClient()
