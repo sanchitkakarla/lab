@@ -78,10 +78,15 @@ export default function NewOrderPage() {
     setSaving(true)
     setServerError('')
 
+    const payload = {
+      ...data,
+      case_start_date: data.case_start_date || undefined,
+    }
+
     const res = await fetch('/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify(payload),
     })
 
     if (!res.ok) {

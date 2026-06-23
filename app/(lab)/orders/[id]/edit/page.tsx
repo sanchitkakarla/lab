@@ -108,10 +108,15 @@ export default function EditOrderPage() {
     setSaving(true)
     setServerError('')
 
+    const payload = {
+      ...data,
+      case_start_date: data.case_start_date || undefined,
+    }
+
     const res = await fetch(`/api/orders/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify(payload),
     })
 
     if (!res.ok) {
