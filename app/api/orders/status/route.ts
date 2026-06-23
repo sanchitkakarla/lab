@@ -99,6 +99,9 @@ export async function GET(req: NextRequest) {
 
   const lines = (data as any[]).map(o => {
     const patient = `${o.patient_first_name} ${o.patient_last_name}`
+    if (o.case_status === 'Delivered') {
+      return `${patient} — Status: Delivered`
+    }
     const pickup = o.estimated_pickup_date ? `estimated pickup on ${o.estimated_pickup_date}` : 'no pickup date set yet'
     return `${patient} — Status: ${o.case_status}, ${pickup}`
   })
