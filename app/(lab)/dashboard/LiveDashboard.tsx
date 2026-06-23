@@ -2,46 +2,13 @@
 
 import { useLiveDashboard } from '@/hooks/useLiveDashboard'
 import { StatusBadge } from '@/components/ui/StatusBadge'
-import { CaseStatus, STAGE_ORDER } from '@/types/database'
 import { format } from 'date-fns'
 import Link from 'next/link'
 import { Activity, CalendarCheck, CalendarClock, PlusCircle, TrendingUp } from 'lucide-react'
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { LiquidButton } from '@/components/ui/liquid-glass-button'
-
-const STAGE_LABELS: Record<CaseStatus, string> = {
-  'Received':       'Received',
-  'Prep Started':   'Prep',
-  'In Fabrication': 'Fab',
-  'Ready':          'Ready',
-  'Delivered':      'Delivered',
-}
-
-const STAGE_COLORS: Record<CaseStatus, string> = {
-  'Received':       'text-gray-600',
-  'Prep Started':   'text-blue-600',
-  'In Fabrication': 'text-purple-600',
-  'Ready':          'text-green-600',
-  'Delivered':      'text-gray-400',
-}
-
-const CHART_COLORS: Record<CaseStatus, string> = {
-  'Received':       '#94a3b8',
-  'Prep Started':   '#3b82f6',
-  'In Fabrication': '#a855f7',
-  'Ready':          '#22c55e',
-  'Delivered':      '#d1d5db',
-}
 
 export function LiveDashboard() {
   const { data, loading } = useLiveDashboard(10000)
-
-  // Build bar chart data from stage counts
-  const chartData = STAGE_ORDER.map(stage => ({
-    stage: STAGE_LABELS[stage],
-    count: data.stageCounts[stage],
-    fill: CHART_COLORS[stage],
-  }))
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -96,57 +63,6 @@ export function LiveDashboard() {
           color="text-gray-900"
           sub="cases in progress"
         />
-      </div>
-
-      {/* Stage counts + chart */}
-      <div className="grid grid-cols-3 gap-4">
-        {/* Stage breakdown */}
-        <div className="glass-card p-5 col-span-1">
-          <h2 className="text-sm font-semibold text-gray-700 mb-4">Cases by stage</h2>
-          <div className="space-y-3">
-            {STAGE_ORDER.map(stage => {
-              const count = data.stageCounts[stage]
-              const pct = data.totalActive > 0 ? Math.round((count / data.totalActive) * 100) : 0
-              return (
-                <div key={stage}>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-medium text-gray-600">{STAGE_LABELS[stage]}</span>
-                    <span className={`text-sm font-bold ${STAGE_COLORS[stage]}`}>{count}</span>
-                  </div>
-                  <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-500"
-                      style={{ width: `${pct}%`, background: CHART_COLORS[stage] }}
-                    />
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Area chart */}
-        <div className="glass-card p-5 col-span-2">
-          <h2 className="text-sm font-semibold text-gray-700 mb-4">Stage distribution</h2>
-          <ResponsiveContainer width="100%" height={180}>
-            <AreaChart data={chartData} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
-              <defs>
-                <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.05} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="stage" tick={{ fontSize: 11, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: '#9ca3af' }} axisLine={false} tickLine={false} allowDecimals={false} />
-              <Tooltip
-                contentStyle={{ background: 'rgba(255,255,255,0.9)', border: '1px solid #e5e7eb', borderRadius: 10, fontSize: 12 }}
-                formatter={(v: any) => [v, 'Cases']}
-              />
-              <Area type="monotone" dataKey="count" stroke="#3b82f6" strokeWidth={2} fill="url(#grad)" dot={{ fill: '#3b82f6', r: 4 }} />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
       </div>
 
       {/* Recent orders table */}
