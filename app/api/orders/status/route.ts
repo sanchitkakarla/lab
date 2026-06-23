@@ -58,15 +58,32 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ result: 'Please provide a patient name or doctor name to look up.' })
   }
 
-  // Optionally filter by DOB if provided (normalize formats)
+  // Optionally filter by DOB if provided — handle multiple formats
   if (dob) {
-    let normalised = dob
-    const parts = dob.split(/[\/\-]/)
-    if (parts.length === 3 && parts[0].length <= 2) {
-      // MM/DD/YYYY or MM-DD-YYYY → YYYY-MM-DD
+    let normalised: string | null = null
+    const clean = dob.trim()
+
+    // YYYY-MM-DD already
+    if (/^\d{4}-\d{2}-\d{2}$/.test(clean)) {
+      normalised = clean
+    }
+    // MM/DD/YYYY or MM-DD-YYYY
+    else if (/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{4}$/.test(clean)) {
+      const parts = clean.split(/[\/\-]/)
       normalised = `${parts[2]}-${parts[0].padStart(2,'0')}-${parts[1].padStart(2,'0')}`
     }
-    query = query.eq('patient_dob', normalised)
+    // Natural language: "August 3 2002", "aug 3 2002", "aug 3, 2002"
+    else {
+      const parsed = new Date(clean)
+      if (!isNaN(parsed.getTime())) {
+        const y = parsed.getFullYear()
+        const m = String(parsed.getMonth() + 1).padStart(2, '0')
+        const d = String(parsed.getDate()).padStart(2, '0')
+        normalised = `${y}-${m}-${d}`
+      }
+    }
+
+    if (normalised) query = query.eq('patient_dob', normalised)
   }
 
   const { data, error } = await query

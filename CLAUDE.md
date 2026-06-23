@@ -1,6 +1,22 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 @AGENTS.md
 
 # Dental Lab — Project Context for Claude Code
+
+## Commands
+
+```bash
+npm run dev       # start local dev server at localhost:3000
+npm run build     # production build (run this to catch type errors before pushing)
+npm run lint      # ESLint
+```
+
+Deploy is automatic — push to `main` and Vercel redeploys `dental-lab-seven.vercel.app`.
+
+---
 
 ## What this project is
 A dental lab order management system + AI voice agent platform.
@@ -59,6 +75,7 @@ Stack: Next.js 16 App Router, Supabase (auth + database), Tailwind CSS, Vercel
 | `/api/agent-settings` | GET, POST | Read/save agent settings + sync to ElevenLabs |
 | `/api/elevenlabs/webhook` | POST | ElevenLabs calls this when agent can't answer — creates ai_ticket |
 | `/api/elevenlabs/transfer` | POST | Returns transfer number for call transfer |
+| `/api/orders/status` | GET | ElevenLabs `get_order_status` tool — looks up case by `patient_first_name`, `patient_last_name`, `dob` (YYYY-MM-DD). Returns plain-text `result` field. |
 | `/api/twilio/voice` | POST | Twilio webhook — checks agent_enabled, routes to ElevenLabs or plays unavailable msg |
 | `/api/portal/chat` | POST | Groq AI chat for doctor portal (fetches their orders as context) |
 | `/api/calendar` | GET | Returns orders as FullCalendar events (pickup date, allDay) |
