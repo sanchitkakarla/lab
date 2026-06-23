@@ -7,11 +7,11 @@ const createOrderSchema = z.object({
   doctor_id:             z.string().uuid(),
   patient_first_name:    z.string().min(1),
   patient_last_name:     z.string().min(1),
-  patient_dob:           z.string().min(1),
+  patient_dob:           z.string().min(1).transform(v => v === '' ? undefined : v),
   product_id:            z.string().uuid(),
   tooth_numbers:         z.array(z.number()).min(1),
   colour_shade:          z.enum(['White', 'Clear']),
-  case_start_date:       z.string().optional(),
+  case_start_date:       z.string().optional().transform(v => v === '' ? undefined : v),
   estimated_pickup_date: z.string().min(1),
   notes:                 z.string().optional(),
 })
