@@ -2,19 +2,20 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 // ElevenLabs GET tool — called during a call to look up case status.
-// Query params:
-//   ?patient_name=John Smith
-//   ?doctor_name=Patel
-// Either one is accepted.
+// Accepted query params (any combination):
+//   ?patient_name=John Smith      — full name
+//   ?patient_first_name=John      — first name only
+//   ?patient_last_name=Smith      — last name only
+//   ?dob=2002-08-03               — date of birth for verification
+//   ?doctor_name=Patel            — look up by doctor last name
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
-  const patientName = (searchParams.get('patient_name') ?? '').trim()
-  const doctorName = (searchParams.get('doctor_name') ?? '').trim()
-
-  if (!patientName && !doctorName) {
-    return NextResponse.json({ result: 'Please provide a patient name or doctor name to look up.' })
-  }
+  const patientName    = (searchParams.get('patient_name') ?? '').trim()
+  const firstName      = (searchParams.get('patient_first_name') ?? '').trim()
+  const lastName       = (searchParams.get('patient_last_name') ?? '').trim()
+  const dob            = (searchParams.get('dob') ?? '').trim()
+  const doctorName     = (searchParams.get('doctor_name') ?? '').trim()
 
   const admin = createAdminClient()
 
@@ -23,6 +24,7 @@ export async function GET(req: NextRequest) {
     .select(`
       patient_first_name,
       patient_last_name,
+      patient_dob,
       case_status,
       estimated_pickup_date,
       doctors ( first_name, last_name ),
@@ -37,25 +39,34 @@ export async function GET(req: NextRequest) {
     const first = parts[0]
     const last = parts.length > 1 ? parts.slice(1).join(' ') : ''
     if (last) {
-      query = query
-        .ilike('patient_first_name', `${first}%`)
-        .ilike('patient_last_name', `${last}%`)
+      query = query.ilike('patient_first_name', `${first}%`).ilike('patient_last_name', `${last}%`)
     } else {
-      query = query.or(
-        `patient_first_name.ilike.${first}%,patient_last_name.ilike.${first}%`
-      )
+      query = query.or(`patient_first_name.ilike.${first}%,patient_last_name.ilike.${first}%`)
     }
-  } else {
-    const lastName = doctorName.replace(/^dr\.?\s*/i, '').split(' ').pop() ?? doctorName
-    const { data: doctors } = await admin
-      .from('doctors')
-      .select('id')
-      .ilike('last_name', `${lastName}%`)
+  } else if (firstName || lastName) {
+    if (firstName) query = query.ilike('patient_first_name', `${firstName}%`)
+    if (lastName)  query = query.ilike('patient_last_name', `${lastName}%`)
+  } else if (doctorName) {
+    const last = doctorName.replace(/^dr\.?\s*/i, '').split(' ').pop() ?? doctorName
+    const { data: doctors } = await admin.from('doctors').select('id').ilike('last_name', `${last}%`)
     const ids = (doctors ?? []).map((d: { id: string }) => d.id)
     if (ids.length === 0) {
       return NextResponse.json({ result: `No orders found for doctor "${doctorName}".` })
     }
     query = query.in('doctor_id', ids)
+  } else {
+    return NextResponse.json({ result: 'Please provide a patient name or doctor name to look up.' })
+  }
+
+  // Optionally filter by DOB if provided (normalize formats)
+  if (dob) {
+    let normalised = dob
+    const parts = dob.split(/[\/\-]/)
+    if (parts.length === 3 && parts[0].length <= 2) {
+      // MM/DD/YYYY or MM-DD-YYYY → YYYY-MM-DD
+      normalised = `${parts[2]}-${parts[0].padStart(2,'0')}-${parts[1].padStart(2,'0')}`
+    }
+    query = query.eq('patient_dob', normalised)
   }
 
   const { data, error } = await query
@@ -65,13 +76,13 @@ export async function GET(req: NextRequest) {
   }
 
   if (!data || data.length === 0) {
-    const name = patientName || doctorName
-    return NextResponse.json({ result: `No active orders found for "${name}".` })
+    const name = patientName || `${firstName} ${lastName}`.trim() || doctorName
+    return NextResponse.json({ result: `No active orders found for "${name}". Please double check the name or date of birth.` })
   }
 
   const lines = (data as any[]).map(o => {
     const patient = `${o.patient_first_name} ${o.patient_last_name}`
-    const pickup = o.estimated_pickup_date ? `pickup on ${o.estimated_pickup_date}` : 'no pickup date yet'
+    const pickup = o.estimated_pickup_date ? `estimated pickup on ${o.estimated_pickup_date}` : 'no pickup date set yet'
     return `${patient} — Status: ${o.case_status}, ${pickup}`
   })
 
