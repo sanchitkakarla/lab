@@ -6,6 +6,7 @@ import { format } from 'date-fns'
 import Link from 'next/link'
 import { Activity, CalendarCheck, CalendarClock, PlusCircle, TrendingUp } from 'lucide-react'
 import { LiquidButton } from '@/components/ui/liquid-glass-button'
+import { PendingPickupsSection } from './PendingPickupsSection'
 
 export function LiveDashboard() {
   const { data, loading } = useLiveDashboard(10000)
@@ -64,6 +65,9 @@ export function LiveDashboard() {
           sub="cases in progress"
         />
       </div>
+
+      {/* Pending pickup requests */}
+      <PendingPickupsSection />
 
       {/* Recent orders table */}
       <div className="glass-card overflow-hidden">

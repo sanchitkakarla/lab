@@ -17,7 +17,15 @@ export default async function PortalDashboard() {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold text-gray-900 mb-6">Your Cases</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-semibold text-gray-900">Your Cases</h2>
+        <Link
+          href="/portal/pickup"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors"
+        >
+          + New Pickup Request
+        </Link>
+      </div>
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <table className="w-full text-sm">

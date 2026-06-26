@@ -107,6 +107,30 @@ export const STATUS_HEX: Record<CaseStatus, string> = {
   'Delivered':      '#6B7280',
 }
 
+export type PickupRequestStatus = 'pending' | 'approved' | 'rejected'
+
+export interface PickupRequest {
+  id: string
+  tenant_id: string
+  doctor_id: string
+  practice_id: string
+  patient_first_name: string
+  patient_last_name: string
+  patient_dob: string
+  product_id: string | null
+  tooth_numbers: number[]
+  colour_shade: string | null
+  preferred_pickup_date: string
+  notes: string | null
+  status: PickupRequestStatus
+  order_id: string | null
+  created_at: string
+  updated_at: string
+  doctors?: Pick<Doctor, 'id' | 'first_name' | 'last_name'>
+  practices?: Pick<Practice, 'id' | 'name'>
+  products?: Pick<Product, 'id' | 'name'>
+}
+
 export type TicketTaskType = 'payment' | 'case_status' | 'parts_not_found' | 'appointment' | 'other'
 export type TicketStatus = 'open' | 'resolved'
 

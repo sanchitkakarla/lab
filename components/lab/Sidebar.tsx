@@ -7,7 +7,7 @@ import { GlassFilter } from '@/components/ui/liquid-glass'
 import {
   LayoutGrid, Sparkles, Settings, LayoutDashboard,
   PlusCircle, Search, Calendar, Building2,
-  Users, Package, LogOut,
+  Users, Package, LogOut, Truck,
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
@@ -17,6 +17,7 @@ const SECONDARY: Record<string, { href: string; label: string; icon: React.Eleme
   main: [
     { href: '/dashboard',  label: 'Dashboard',     icon: LayoutDashboard },
     { href: '/orders/new', label: 'New Order',      icon: PlusCircle },
+    { href: '/pickups',    label: 'Pickups',        icon: Truck },
     { href: '/lookup',     label: 'Patient Lookup', icon: Search },
     { href: '/calendar',   label: 'Calendar',       icon: Calendar },
   ],
@@ -66,7 +67,7 @@ export function AppSidebar() {
     setActive(prev => prev === section ? null : section)
   }
 
-  const isMainActive = ['/dashboard', '/orders', '/lookup', '/calendar'].some(p => pathname.startsWith(p))
+  const isMainActive = ['/dashboard', '/orders', '/pickups', '/lookup', '/calendar'].some(p => pathname.startsWith(p))
   const isAIActive = pathname.startsWith('/ai')
   const isSettingsActive = pathname.startsWith('/settings')
 

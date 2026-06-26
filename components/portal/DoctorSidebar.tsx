@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { useSidebar } from '@/components/ui/sidebar'
 import { GlassFilter } from '@/components/ui/liquid-glass'
-import { Users, Sparkles, LogOut, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Users, Sparkles, LogOut, ChevronLeft, ChevronRight, Truck } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 
@@ -16,6 +16,7 @@ interface Doctor {
 
 const NAV = [
   { href: '/portal',          label: 'My Patients', icon: Users },
+  { href: '/portal/pickup',   label: 'Pickup',      icon: Truck },
   { href: '/portal/ask-ai',   label: 'Ask AI',      icon: Sparkles },
 ]
 
