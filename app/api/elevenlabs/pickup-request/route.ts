@@ -40,6 +40,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
+  console.log('pickup-request body:', JSON.stringify(body))
+
   const {
     doctor_name,
     patient_first_name,
