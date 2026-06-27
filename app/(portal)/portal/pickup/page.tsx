@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { createClient } from '@/lib/supabase/client'
 import { Product } from '@/types/database'
 import { format } from 'date-fns'
 
@@ -27,7 +26,6 @@ const LOWER_ARCH = Array.from({ length: 16 }, (_, i) => i + 17)
 
 export default function PickupRequestPage() {
   const router = useRouter()
-  const supabase = createClient()
   const [products, setProducts] = useState<Product[]>([])
   const [saving, setSaving] = useState(false)
   const [serverError, setServerError] = useState('')
@@ -41,9 +39,7 @@ export default function PickupRequestPage() {
   const selectedTeeth = watch('tooth_numbers')
 
   useEffect(() => {
-    supabase.from('products').select('*').eq('is_active', true).order('sort_order').then(({ data }) => {
-      setProducts(data ?? [])
-    })
+    fetch('/api/products').then(r => r.json()).then(data => setProducts(data ?? []))
     loadMyRequests()
   }, [])
 
