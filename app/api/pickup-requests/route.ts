@@ -1,4 +1,5 @@
 import { createServerClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -44,8 +45,9 @@ export async function POST(request: Request) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  // Resolve doctor from logged-in email
-  const { data: doctor } = await supabase
+  // Use admin client to look up doctor — RLS blocks doctors from reading their own row
+  const admin = createAdminClient()
+  const { data: doctor } = await admin
     .from('doctors')
     .select('id, practice_id, tenant_id')
     .eq('email', user.email)
