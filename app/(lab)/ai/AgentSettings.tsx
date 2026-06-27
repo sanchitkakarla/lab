@@ -156,7 +156,7 @@ export function AgentSettings({ initial }: { initial: Partial<Settings & { week_
       </div>
 
       {/* Row 2: Office hours + Google Maps side by side */}
-      <div className="grid grid-cols-5 gap-4 items-start">
+      <div className="grid grid-cols-5 gap-4 items-stretch">
 
         {/* Office hours */}
         <div className="glass-card p-5 col-span-3">
@@ -165,7 +165,7 @@ export function AgentSettings({ initial }: { initial: Partial<Settings & { week_
             {DAYS.map(day => {
               const d = settings.week_schedule[day]
               return (
-                <div key={day} className="flex items-center gap-3">
+                <div key={day} className="flex items-center gap-2.5 min-w-0">
                   {/* Open checkbox */}
                   <button
                     onClick={() => setDay(day, 'open', !d.open)}
@@ -175,7 +175,7 @@ export function AgentSettings({ initial }: { initial: Partial<Settings & { week_
                   </button>
 
                   {/* Day name */}
-                  <span className={`text-xs w-20 flex-shrink-0 ${d.open ? 'text-gray-700 font-medium' : 'text-gray-400'}`}>{day}</span>
+                  <span className={`text-xs w-[88px] flex-shrink-0 ${d.open ? 'text-gray-700 font-medium' : 'text-gray-400'}`}>{day}</span>
 
                   {d.open ? (
                     <>
@@ -183,14 +183,14 @@ export function AgentSettings({ initial }: { initial: Partial<Settings & { week_
                         type="time"
                         value={d.from}
                         onChange={e => setDay(day, 'from', e.target.value)}
-                        className="text-xs px-2 py-1 rounded-lg border border-gray-200 bg-white/60 focus:outline-none focus:ring-1 focus:ring-gray-400 text-gray-900 w-24"
+                        className="text-xs px-2 py-1 rounded-lg border border-gray-200 bg-white/60 focus:outline-none focus:ring-1 focus:ring-gray-400 text-gray-900 flex-1 min-w-0"
                       />
-                      <span className="text-xs text-gray-400">to</span>
+                      <span className="text-xs text-gray-400 flex-shrink-0">to</span>
                       <input
                         type="time"
                         value={d.to}
                         onChange={e => setDay(day, 'to', e.target.value)}
-                        className="text-xs px-2 py-1 rounded-lg border border-gray-200 bg-white/60 focus:outline-none focus:ring-1 focus:ring-gray-400 text-gray-900 w-24"
+                        className="text-xs px-2 py-1 rounded-lg border border-gray-200 bg-white/60 focus:outline-none focus:ring-1 focus:ring-gray-400 text-gray-900 flex-1 min-w-0"
                       />
                     </>
                   ) : (
