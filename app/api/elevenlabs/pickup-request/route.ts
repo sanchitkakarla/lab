@@ -124,9 +124,9 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (error) {
-    console.error('Pickup request insert error:', error)
+    console.error('Pickup request insert error:', JSON.stringify(error))
     return NextResponse.json({
-      result: 'There was an error submitting the pickup request. Please try again or submit through the portal.'
+      result: `Failed to create pickup request: ${error.message}. Code: ${error.code}.`
     })
   }
 
