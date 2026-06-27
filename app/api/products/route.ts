@@ -1,4 +1,5 @@
 import { createServerClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
@@ -8,10 +9,11 @@ const schema = z.object({
 })
 
 export async function GET() {
-  const supabase = await createServerClient()
+  // Use admin client so both lab staff and doctors can fetch products (bypasses RLS)
+  const supabase = createAdminClient()
   const { data, error } = await supabase
     .from('products')
-    .select('*')
+    .select('id, name, sort_order')
     .eq('is_active', true)
     .order('sort_order')
 
