@@ -1,39 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
-// ElevenLabs calls this tool when a doctor wants to submit a pickup request over the phone.
-//
-// Add this as a webhook tool in your ElevenLabs agent:
-//   Name: create_pickup_request
-//   URL:  POST https://dental-lab-seven.vercel.app/api/elevenlabs/pickup-request
-//
-// Parameters the agent must collect before calling this tool:
-//   doctor_name           string  — e.g. "Dr. Smith" or "Smith"
-//   patient_first_name    string
-//   patient_last_name     string
-//   patient_dob           string  — YYYY-MM-DD format
-//   product_name          string  — spoken product name, matched to DB or put in notes
-//   preferred_pickup_date string  — YYYY-MM-DD format
-//   tooth_numbers         string  — optional, e.g. "3, 4, 5" or empty/null to skip
-//   notes                 string  — optional
-
 export async function POST(req: NextRequest) {
   const secret = req.headers.get('x-webhook-secret')
   if (process.env.ELEVENLABS_WEBHOOK_SECRET && secret !== process.env.ELEVENLABS_WEBHOOK_SECRET) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  let body: {
-    doctor_name?: string
-    patient_first_name?: string
-    patient_last_name?: string
-    patient_dob?: string
-    product_name?: string
-    preferred_pickup_date?: string
-    tooth_numbers?: string
-    notes?: string
-  }
-
+  let body: Record<string, string>
   try {
     body = await req.json()
   } catch {
@@ -53,32 +27,45 @@ export async function POST(req: NextRequest) {
     notes,
   } = body
 
-  if (!doctor_name || !patient_first_name || !patient_last_name || !patient_dob || !preferred_pickup_date) {
+  if (!patient_first_name || !patient_last_name || !patient_dob || !preferred_pickup_date) {
     return NextResponse.json({
-      result: 'Missing required information. Please make sure you have the doctor name, patient full name, date of birth, and preferred pickup date.'
+      result: 'I am missing some required information. I need the patient full name, date of birth, and preferred pickup date to submit the request.'
     })
   }
 
   const admin = createAdminClient()
 
-  // Look up doctor by last name (case-insensitive)
-  const nameParts = doctor_name.replace(/^dr\.?\s*/i, '').trim().split(/\s+/)
-  const lastName = nameParts[nameParts.length - 1]
+  // Get the active tenant
+  const { data: tenant } = await admin
+    .from('tenants')
+    .select('id')
+    .eq('is_active', true)
+    .single()
 
-  const { data: doctors } = await admin
-    .from('doctors')
-    .select('id, first_name, last_name, practice_id, tenant_id')
-    .ilike('last_name', `%${lastName}%`)
-
-  if (!doctors || doctors.length === 0) {
-    return NextResponse.json({
-      result: `I could not find a doctor with the name "${doctor_name}" in the system. Please ask them to double-check their name or submit the request through the portal.`
-    })
+  if (!tenant) {
+    return NextResponse.json({ result: 'System configuration error. Please submit through the portal.' })
   }
 
-  const doctor = doctors[0]
+  // Try to find the doctor by last name — but don't fail if not found
+  let doctor_id: string | null = null
+  let practice_id: string | null = null
 
-  // Try to match product by name (case-insensitive)
+  if (doctor_name) {
+    const nameParts = doctor_name.replace(/^dr\.?\s*/i, '').trim().split(/\s+/)
+    const lastName = nameParts[nameParts.length - 1]
+    const { data: doctors } = await admin
+      .from('doctors')
+      .select('id, practice_id')
+      .ilike('last_name', `%${lastName}%`)
+      .limit(1)
+
+    if (doctors && doctors.length > 0) {
+      doctor_id = doctors[0].id
+      practice_id = doctors[0].practice_id
+    }
+  }
+
+  // Try to match product by name
   let product_id: string | null = null
   let finalNotes = notes ?? ''
 
@@ -88,31 +75,38 @@ export async function POST(req: NextRequest) {
       .select('id, name')
       .eq('is_active', true)
       .ilike('name', `%${product_name}%`)
+      .limit(1)
 
     if (products && products.length > 0) {
       product_id = products[0].id
     } else {
-      // No match — put spoken product name in notes
       const productNote = `Product requested: ${product_name}`
       finalNotes = finalNotes ? `${productNote}. ${finalNotes}` : productNote
     }
   }
 
-  // Parse tooth numbers if provided
+  // Add caller name to notes if doctor couldn't be matched
+  if (doctor_name && !doctor_id) {
+    const callerNote = `Called in by: ${doctor_name}`
+    finalNotes = finalNotes ? `${callerNote}. ${finalNotes}` : callerNote
+  }
+
+  // Parse tooth numbers
   let toothNumbersArray: number[] = []
   if (tooth_numbers && tooth_numbers.trim() !== '') {
     toothNumbersArray = tooth_numbers
       .split(/[\s,]+/)
-      .map(n => parseInt(n.trim(), 10))
-      .filter(n => !isNaN(n) && n >= 1 && n <= 32)
+      .map((n: string) => parseInt(n.trim(), 10))
+      .filter((n: number) => !isNaN(n) && n >= 1 && n <= 32)
   }
 
-  const { data, error } = await admin
+  const { error } = await admin
     .from('pickup_requests')
     .insert({
-      tenant_id:             doctor.tenant_id,
-      doctor_id:             doctor.id,
-      practice_id:           doctor.practice_id,
+      tenant_id:             tenant.id,
+      doctor_id:             doctor_id,
+      practice_id:           practice_id,
+      caller_name:           doctor_name ?? null,
       patient_first_name:    patient_first_name.trim(),
       patient_last_name:     patient_last_name.trim(),
       patient_dob:           patient_dob,
@@ -122,18 +116,16 @@ export async function POST(req: NextRequest) {
       preferred_pickup_date: preferred_pickup_date,
       notes:                 finalNotes || null,
     })
-    .select('id')
-    .single()
 
   if (error) {
     console.error('Pickup request insert error:', JSON.stringify(error))
     return NextResponse.json({
-      result: `Failed to create pickup request: ${error.message}. Code: ${error.code}.`
+      result: `I was unable to submit the pickup request. Error: ${error.message}`
     })
   }
 
   const patientName = `${patient_first_name} ${patient_last_name}`
   return NextResponse.json({
-    result: `Perfect! I've submitted a pickup request for ${patientName} with a preferred pickup date of ${preferred_pickup_date}. The lab will review it and create an order. Is there anything else I can help you with?`
+    result: `I have successfully submitted a pickup request for ${patientName} with a preferred pickup date of ${preferred_pickup_date}. The lab will review it shortly. Is there anything else I can help you with?`
   })
 }

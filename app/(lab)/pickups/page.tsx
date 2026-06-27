@@ -13,6 +13,7 @@ interface PickupRequest {
   status: 'pending' | 'approved' | 'rejected'
   order_id: string | null
   notes: string | null
+  caller_name: string | null
   created_at: string
   doctors: { id: string; first_name: string; last_name: string } | null
   practices: { id: string; name: string } | null
@@ -111,7 +112,11 @@ export default function PickupsPage() {
                       )}
                     </td>
                     <td className="px-5 py-3.5 text-gray-600">
-                      {r.doctors ? `Dr. ${r.doctors.first_name} ${r.doctors.last_name}` : '—'}
+                      {r.doctors
+                        ? `Dr. ${r.doctors.first_name} ${r.doctors.last_name}`
+                        : r.caller_name
+                        ? <span>{r.caller_name} <span className="text-xs text-yellow-600">(via phone)</span></span>
+                        : '—'}
                     </td>
                     <td className="px-5 py-3.5 text-gray-600">{r.practices?.name ?? '—'}</td>
                     <td className="px-5 py-3.5 text-gray-600">{r.products?.name ?? '—'}</td>
